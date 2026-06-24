@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XML Converter Accurate</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+	<link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -88,7 +88,7 @@
         <aside class="w-64 bg-white border-r border-slate-200 flex-shrink-0 hidden md:flex flex-col h-screen sticky top-0 shadow-sm">
             <div class="p-6 border-b border-slate-100">
                 <h1 class="text-xl font-bold text-slate-800">XML Converter</h1>
-                <p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest">For Accurate Desktop</p>
+                <p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Vercel Production Ready</p>
             </div>
             <nav class="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
                 <!-- Penjualan Section -->
@@ -237,7 +237,7 @@
                     JVNUMBER: ['JVNUMBER', 'NO BUKTI', 'VOUCHER NO'], TRANSDATE: ['TRANSDATE', 'TANGGAL', 'DATE'], TRANSDESCRIPTION: ['TRANSDESCRIPTION', 'KETERANGAN HEADER'], GLACCOUNT: ['GLACCOUNT', 'ACCOUNT NO', 'NO AKUN'], GLAMOUNT: ['GLAMOUNT', 'AMOUNT', 'NILAI'], DESCRIPTION: ['DESCRIPTION', 'KETERANGAN BARIS'], CUSTOMERNO: ['CUSTOMERNO', 'PELANGGAN NO'], VENDORNO: ['VENDORNO', 'PEMASOK NO'], CURRENCYNAME: ['CURRENCYNAME', 'CURRENCY'] 
                 } 
             },
-            'SI': { title: 'Sales Invoice', desc: 'Konversi Faktur Penjualan ke pelanggan.', 
+            'SI': { title: 'Sales Invoice', desc: 'Konversi Faktur Penjualan ke pelanggan (Accurate v5/v6 format).', 
                 rules: { 
                     // Header Mappings
                     TRANSACTIONID: ['TRANSACTIONID', 'TXID', 'TRANSAKSI ID', 'ID'],
@@ -348,12 +348,28 @@
             },
             'OP': { title: 'Other Payment', desc: 'Konversi transaksi Pembayaran Lainnya (Beban, Pajak, dll).', 
                 rules: { 
-                    PAYMENTNO: ['JVNUMBER', 'NO BUKTI', 'PAYMENT NO'], PAYMENTDATE: ['TRANSDATE', 'TANGGAL', 'DATE'], BANKACCOUNT: ['GLACCOUNT', 'AKUN KAS/BANK'], PAYEE: ['PAYEE', 'PENERIMA'], LINE_ACCOUNT: ['AccountLine_GLACCOUNT', 'KODE AKUN BIAYA'], LINE_AMOUNT: ['GLAMOUNT', 'JUMLAH'], LINE_MEMO: ['DESCRIPTION', 'KETERANGAN'] 
+                    PAYMENTNO: ['JVNUMBER', 'NO BUKTI', 'PAYMENT NO'], PAYMENTDATE: ['TRANSDATE', 'TANGGAL', 'DATE'], BANKACCOUNT: ['GLACCOUNT', 'AKUN KAS/BANK'], PAYEE: ['PAYEE', 'PENERIMA'], LINE_ACCOUNT: ['AccountLine_GLACCOUNT', 'KODE AKUN BIAYA'], LINE_AMOUNT: ['GLAMOUNT', 'JUMLAH'], LINE_MEMO: ['DESCRIPTION', 'KETERANGAN'], MEMO: ['TRANSDESCRIPTION', 'KETERANGAN HEADER'], DEPTID: ['DEPTID', 'DEPARTEMEN'], PROJECTID: ['PROJECTID', 'PROYEK'] 
                 } 
             },
             'OD': { title: 'Other Deposit', desc: 'Konversi transaksi Penerimaan Lainnya.', 
                 rules: { 
-                    DEPOSITNO: ['JVNUMBER', 'NO BUKTI', 'DEPOSIT NO'], DEPOSITDATE: ['TRANSDATE', 'TANGGAL', 'DATE'], BANKACCOUNT: ['GLACCOUNT3', 'AKUN KAS/BANK'], LINE_ACCOUNT: ['AccountLine_GLACCOUNT', 'KODE AKUN SUMBER'], LINE_AMOUNT: ['GLAMOUNT', 'AMOUNT', 'JUMLAH'], LINE_MEMO: ['DESCRIPTION', 'KETERANGAN'] 
+                    TRANSACTIONID: ['TRANSACTIONID', 'TXID', 'TRANSAKSI ID', 'ID'],
+                    JVNUMBER: ['JVNUMBER', 'DEPOSITNO', 'NO BUKTI', 'SEQUENCENO'], 
+                    TRANSDATE: ['TRANSDATE', 'DEPOSITDATE', 'TANGGAL', 'DATE', 'TXDATE'], 
+                    GLACCOUNT3: ['GLACCOUNT3', 'BANKACCOUNT', 'AKUN KAS/BANK', 'GLACCOUNT'], 
+                    LINE_ACCOUNT: ['ACCOUNTLINE_GLACCOUNT', 'GLACCOUNT_LINE', 'LINE_ACCOUNT'], 
+                    LINE_AMOUNT: ['GLAMOUNT', 'LINE_AMOUNT', 'AMOUNT', 'JUMLAH'], 
+                    LINE_MEMO: ['DESCRIPTION', 'LINE_MEMO', 'KETERANGAN'], 
+                    MEMO: ['TRANSDESCRIPTION', 'MEMO', 'KETERANGAN HEADER'], 
+                    DEPTID: ['DEPTID', 'DEPARTEMEN'], 
+                    PROJECTID: ['PROJECTID', 'PROYEK'],
+                    RATE: ['RATE', 'KURS'],
+                    RATE4: ['RATE4', 'RATE_HEADER'],
+                    PRIMEAMOUNT: ['PRIMEAMOUNT'],
+                    TXDATE: ['TXDATE'],
+                    POSTED: ['POSTED'],
+                    CURRENCYNAME: ['CURRENCYNAME'],
+                    JVAMOUNT: ['JVAMOUNT']
                 } 
             }
         };
@@ -365,39 +381,6 @@
                 showApp();
             } else {
                 showLogin();
-            }
-        }
-
-        function showApp() {
-            loginContainer.classList.add('hidden');
-            appContainer.classList.remove('hidden');
-            switchModule('JV');
-        }
-
-        function showLogin() {
-            loginContainer.classList.remove('hidden');
-            appContainer.classList.add('hidden');
-            usernameInput.value = '';
-            passwordInput.value = '';
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const username = usernameInput.value.trim();
-            const password = passwordInput.value;
-
-            if (username === 'admin' && password === 'accurate123') {
-                loginError.classList.add('hidden');
-                if (rememberMe.checked) {
-                    localStorage.setItem('isAuthenticated', 'true');
-                } else {
-                    sessionStorage.setItem('isAuthenticated', 'true');
-                }
-                showApp();
-                showToast("Berhasil masuk!");
-            } else {
-                loginError.classList.remove('hidden');
-                loginError.innerText = "Username atau password salah.";
             }
         }
 
@@ -439,6 +422,39 @@
                     return false;
                 }
             }, false);
+        }
+
+        function showApp() {
+            loginContainer.classList.add('hidden');
+            appContainer.classList.remove('hidden');
+            switchModule('JV');
+        }
+
+        function showLogin() {
+            loginContainer.classList.remove('hidden');
+            appContainer.classList.add('hidden');
+            usernameInput.value = '';
+            passwordInput.value = '';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if (username === 'admin' && password === 'accurate123') {
+                loginError.classList.add('hidden');
+                if (rememberMe.checked) {
+                    localStorage.setItem('isAuthenticated', 'true');
+                } else {
+                    sessionStorage.setItem('isAuthenticated', 'true');
+                }
+                showApp();
+                showToast("Berhasil masuk!");
+            } else {
+                loginError.classList.remove('hidden');
+                loginError.innerText = "Username atau password salah.";
+            }
         }
 
         function handleLogout() {
@@ -557,21 +573,77 @@
 
         function formatDate(val, targetFormat = 'DD/MM/YYYY 00:00:00') {
             if (!val) return "";
-            let d;
-            if (val instanceof Date) d = val;
-            else if (typeof val === 'number') d = new Date((val - 25569) * 86400 * 1000);
-            else {
-                d = new Date(val);
-                if (isNaN(d.getTime())) {
-                    const parts = String(val).match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
-                    if (parts) d = new Date(parts[3], parts[2] - 1, parts[1]);
+            
+            let day, month, year;
+            
+            if (val instanceof Date) {
+                // Ambil representation kalender murni dari Date object dengan toleransi timezone offset.
+                // Tambahkan 12 jam (setengah hari) untuk mendorong penunjuk waktu ke tengah hari (midday),
+                // sehingga pembacaan UTC murni maupun Lokal peramban menghasilkan tanggal yang sama persis
+                // tanpa pernah tergeser mundur 1 hari akibat perbedaan offset zona waktu komputer pengguna.
+                const adjustedDate = new Date(val.getTime() + 12 * 60 * 60 * 1000);
+                
+                // Cek apakah UTC atau lokal yang lebih mendekati representasi awal
+                const utcHours = val.getUTCHours();
+                const utcDist = Math.min(utcHours, 24 - utcHours);
+                
+                const localHours = val.getHours();
+                const localDist = Math.min(localHours, 24 - localHours);
+                
+                if (utcDist <= localDist) {
+                    day = String(adjustedDate.getUTCDate()).padStart(2, '0');
+                    month = String(adjustedDate.getUTCMonth() + 1).padStart(2, '0');
+                    year = adjustedDate.getUTCFullYear();
+                } else {
+                    day = String(adjustedDate.getDate()).padStart(2, '0');
+                    month = String(adjustedDate.getMonth() + 1).padStart(2, '0');
+                    year = adjustedDate.getFullYear();
+                }
+            } else if (typeof val === 'number') {
+                // Penanganan Serial Number Excel secara presisi dengan penambahan waktu tengah hari (midday)
+                const utcMS = Math.round((val - 25569) * 86400 * 1000) + (12 * 60 * 60 * 1000);
+                const d = new Date(utcMS);
+                day = String(d.getUTCDate()).padStart(2, '0');
+                month = String(d.getUTCMonth() + 1).padStart(2, '0');
+                year = d.getUTCFullYear();
+            } else {
+                // Bentuk String murni (Parsing Direct Regex menghindari shift timezone JavaScript engine)
+                const str = String(val).trim();
+                const isoMatchExact = str.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+                if (isoMatchExact) {
+                    year = isoMatchExact[1];
+                    month = String(isoMatchExact[2]).padStart(2, '0');
+                    day = String(isoMatchExact[3]).padStart(2, '0');
+                } else {
+                    const dmyMatch = str.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+                    if (dmyMatch) {
+                        day = String(dmyMatch[1]).padStart(2, '0');
+                        month = String(dmyMatch[2]).padStart(2, '0');
+                        year = dmyMatch[3];
+                    } else {
+                        const d = new Date(str);
+                        if (!isNaN(d.getTime())) {
+                            const adjusted = new Date(d.getTime() + 12 * 60 * 60 * 1000);
+                            const utcH = d.getUTCHours();
+                            const utcD = Math.min(utcH, 24 - utcH);
+                            const locH = d.getHours();
+                            const locD = Math.min(locH, 24 - locH);
+                            
+                            if (utcD <= locD) {
+                                day = String(adjusted.getUTCDate()).padStart(2, '0');
+                                month = String(adjusted.getUTCMonth() + 1).padStart(2, '0');
+                                year = adjusted.getUTCFullYear();
+                            } else {
+                                day = String(adjusted.getDate()).padStart(2, '0');
+                                month = String(adjusted.getMonth() + 1).padStart(2, '0');
+                                year = adjusted.getFullYear();
+                            }
+                        } else {
+                            return val;
+                        }
+                    }
                 }
             }
-            if (!d || isNaN(d.getTime())) return val;
-            
-            const day = String(d.getDate()).padStart(2, '0');
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const year = d.getFullYear();
             
             if (targetFormat === 'YYYY-MM-DD') {
                 return `${year}-${month}-${day}`;
@@ -583,7 +655,7 @@
         function generateJVBlock(rows, head, idx) {
             let b = `    <JV operation="Add" REQUESTID="${idx+1}">\n      <JVNUMBER>${escapeXml(head[mapping['JVNUMBER']])}</JVNUMBER>\n      <TRANSDATE>${formatDate(head[mapping['TRANSDATE']])}</TRANSDATE>\n      <SOURCE>GL</SOURCE><TRANSTYPE>journal voucher</TRANSTYPE>\n      <TRANSDESCRIPTION>${escapeXml(head[mapping['TRANSDESCRIPTION']]||'')}</TRANSDESCRIPTION>\n      <JVAMOUNT>${calculateSum(rows, mapping['GLAMOUNT'], true)}</JVAMOUNT>\n`;
             rows.forEach((r, i) => {
-                b += `      <ACCOUNTLINE operation="Add"><KeyID>${i}</KeyID><GLACCOUNT>${escapeXml(r[mapping['GLACCOUNT']])}</GLACCOUNT><GLAMOUNT>${r[mapping['GLAMOUNT']]||0}</GLAMOUNT><DESCRIPTION>${escapeXml(r[mapping['DESCRIPTION']]||'')}</DESCRIPTION><RATE>1</RATE><PRIMEAMOUNT>${r[mapping['GLAMOUNT']]||0}</PRIMEAMOUNT><CURRENCYNAME>${escapeXml(r[mapping['CURRENCYNAME']]||'IDR')}</CURRENCYNAME>`;
+                b += `      <ACCOUNTLINE operation="Add"><KeyID>${i}</KeyID><GLACCOUNT>${escapeXml(r[mapping['GLACCOUNT']])}</GLACCOUNT><GLAMOUNT>${r[mapping['GLAMOUNT']]||0}</GLACCOUNT><DESCRIPTION>${escapeXml(r[mapping['DESCRIPTION']]||'')}</DESCRIPTION><RATE>1</RATE><PRIMEAMOUNT>${r[mapping['GLAMOUNT']]||0}</PRIMEAMOUNT><CURRENCYNAME>${escapeXml(r[mapping['CURRENCYNAME']]||'IDR')}</CURRENCYNAME>`;
                 if(r[mapping['CUSTOMERNO']]) b += `<CUSTOMERNO>${escapeXml(r[mapping['CUSTOMERNO']])}</CUSTOMERNO>`;
                 if(r[mapping['VENDORNO']]) b += `<VENDORNO>${escapeXml(r[mapping['VENDORNO']])}</VENDORNO>`;
                 b += `</ACCOUNTLINE>\n`;
@@ -713,44 +785,43 @@
 
         function generateSOBlock(rows, head, idx) {
             let b = `    <SALESORDER operation="Add" REQUESTID="${idx+1}">\n      <SONO>${escapeXml(head[mapping['SONO']])}</SONO><SODATE>${formatDate(head[mapping['SODATE']])}</SODATE><CUSTOMERID>${escapeXml(head[mapping['CUSTOMERID']])}</CUSTOMERID>\n`;
-            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY><UNITPRICE>${r[mapping['UNITPRICE']]||0}</UNITPRICE></ITEMLINE>\n`; });
+            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY><UNITPRICE>${r[mapping['UNITPRICE']]||0}</UNITPRICE><ITEMUNIT>${escapeXml(r[mapping['ITEMUNIT']]||'')}</ITEMUNIT></ITEMLINE>\n`; });
             return b + `    </SALESORDER>\n`;
         }
 
         function generateSRBlock(rows, head, idx) {
             let b = `    <SALESRETURN operation="Add" REQUESTID="${idx+1}">\n      <INVOICENO>${escapeXml(head[mapping['INVOICENO']])}</INVOICENO><INVOICEDATE>${formatDate(head[mapping['INVOICEDATE']])}</INVOICEDATE><CUSTOMERID>${escapeXml(head[mapping['CUSTOMERID']])}</CUSTOMERID>\n`;
-            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY></ITEMLINE>\n`; });
+            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY><WAREHOUSEID>${escapeXml(r[mapping['WAREHOUSEID']]||'')}</WAREHOUSEID></ITEMLINE>\n`; });
             return b + `    </SALESRETURN>\n`;
         }
 
         function generateDOBlock(rows, head, idx) {
             let b = `    <DELIVERYORDER operation="Add" REQUESTID="${idx+1}">\n      <DELIVERYORDERNO>${escapeXml(head[mapping['DELIVERYORDERNO']])}</DELIVERYORDERNO><SHIPDATE>${formatDate(head[mapping['SHIPDATE']])}</SHIPDATE><CUSTOMERID>${escapeXml(head[mapping['CUSTOMERID']])}</CUSTOMERID>\n`;
-            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY></ITEMLINE>\n`; });
+            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY><WAREHOUSEID>${escapeXml(r[mapping['WAREHOUSEID']]||'')}</WAREHOUSEID></ITEMLINE>\n`; });
             return b + `    </DELIVERYORDER>\n`;
         }
 
         function generatePRBlock(rows, head, idx) {
             let b = `    <PURCHASEREQUEST operation="Add" REQUESTID="${idx+1}">\n      <REQNO>${escapeXml(head[mapping['REQNO']])}</REQNO><REQDATE>${formatDate(head[mapping['REQDATE']])}</REQDATE>\n`;
-            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY></ITEMLINE>\n`; });
+            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY><ITEMUNIT>${escapeXml(r[mapping['ITEMUNIT']]||'')}</ITEMUNIT></ITEMLINE>\n`; });
             return b + `    </PURCHASEREQUEST>\n`;
         }
 
-        // --- All Module Generators (Lanjutan) ---
         function generatePOBlock(rows, head, idx) {
-            let b = `    <PURCHASEORDER operation="Add" REQUESTID="${idx+1}">\n      <PONO>${escapeXml(head[mapping['PONO']])}</PONO><PODATE>${formatDate(head[mapping['PODATE']])}</PODATE><VENDORREF>${escapeXml(head[mapping['VENDORREF']])}</VENDORREF>\n`;
-            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY><UNITPRICE>${r[mapping['UNITPRICE']]||0}</UNITPRICE></ITEMLINE>\n`; });
+            let b = `    <PURCHASEORDER operation="Add" REQUESTID="${idx+1}">\n      <PONO>${escapeXml(head[mapping['PONO']])}</PONO><PODATE>${formatDate(head[mapping['PODATE']])}</PODATE><VENDORREF>${escapeXml(head[mapping['VENDORREF']])}</VENDORREF><CURRENCYNAME>${escapeXml(head[mapping['CURRENCYNAME']]||'IDR')}</CURRENCYNAME>\n`;
+            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY><UNITPRICE>${r[mapping['UNITPRICE']]||0}</UNITPRICE><ITEMUNIT>${escapeXml(r[mapping['ITEMUNIT']]||'')}</ITEMUNIT></ITEMLINE>\n`; });
             return b + `    </PURCHASEORDER>\n`;
         }
 
         function generateRIBlock(rows, head, idx) {
             let b = `    <RECEIVEITEM operation="Add" REQUESTID="${idx+1}">\n      <RECEIVEITEMNO>${escapeXml(head[mapping['RIID']])}</RECEIVEITEMNO><RECEIVEITEMDATE>${formatDate(head[mapping['RIDATE']])}</RECEIVEITEMDATE><VENDORID>${escapeXml(head[mapping['VENDORID']])}</VENDORID>\n`;
-            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY></ITEMLINE>\n`; });
+            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY><WAREHOUSEID>${escapeXml(r[mapping['WAREHOUSEID']]||'')}</WAREHOUSEID></ITEMLINE>\n`; });
             return b + `    </RECEIVEITEM>\n`;
         }
 
         function generatePIBlock(rows, head, idx) {
-            let b = `    <PURCHASEINVOICE operation="Add" REQUESTID="${idx+1}">\n      <INVOICENO>${escapeXml(head[mapping['INVOICENO']])}</INVOICENO><INVOICEDATE>${formatDate(head[mapping['INVOICEDATE']])}</INVOICEDATE><VENDORID>${escapeXml(head[mapping['VENDORID']])}</VENDORID>\n`;
-            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY><UNITPRICE>${r[mapping['UNITPRICE']]||0}</UNITPRICE></ITEMLINE>\n`; });
+            let b = `    <PURCHASEINVOICE operation="Add" REQUESTID="${idx+1}">\n      <INVOICENO>${escapeXml(head[mapping['INVOICENO']])}</INVOICENO><INVOICEDATE>${formatDate(head[mapping['INVOICEDATE']])}</INVOICEDATE><VENDORID>${escapeXml(head[mapping['VENDORID']])}</VENDORID><CURRENCYNAME>${escapeXml(head[mapping['CURRENCYNAME']]||'IDR')}</CURRENCYNAME>\n`;
+            rows.forEach((r, i) => { b += `      <ITEMLINE operation="Add"><ITEMNO>${escapeXml(r[mapping['ITEMNO']])}</ITEMNO><QUANTITY>${r[mapping['QUANTITY']]||0}</QUANTITY><UNITPRICE>${r[mapping['UNITPRICE']]||0}</UNITPRICE><ITEMUNIT>${escapeXml(r[mapping['ITEMUNIT']]||'')}</ITEMUNIT><WAREHOUSEID>${escapeXml(r[mapping['WAREHOUSEID']]||'')}</WAREHOUSEID></ITEMLINE>\n`; });
             return b + `    </PURCHASEINVOICE>\n`;
         }
 
@@ -764,13 +835,13 @@
         }
 
         function generateVPBlock(rows, head, idx) {
-            let b = `    <VENDORPAYMENT operation="Add" REQUESTID="${idx+1}">\n      <SEQUENCENO>${escapeXml(head[mapping['SEQUENCENO']])}</SEQUENCENO><PAYMENTDATE>${formatDate(head[mapping['PAYMENTDATE']])}</PAYMENTDATE><VENDORID>${escapeXml(head[mapping['VENDORID']])}</VENDORID><BANKACCNT>${escapeXml(head[mapping['BANKACCNT']])}</BANKACCNT>\n`;
+            let b = `    <VENDORPAYMENT operation="Add" REQUESTID="${idx+1}">\n      <SEQUENCENO>${escapeXml(head[mapping['SEQUENCENO']])}</SEQUENCENO><PAYMENTDATE>${formatDate(head[mapping['PAYMENTDATE']])}</PAYMENTDATE><VENDORID>${escapeXml(head[mapping['VENDORID']])}</VENDORID><BANKACCNT>${escapeXml(head[mapping['BANKACCNT']])}</BANKACCNT><CURRENCYNAME>${escapeXml(head[mapping['CURRENCYNAME']]||'IDR')}</CURRENCYNAME>\n`;
             rows.forEach((r, i) => { b += `      <PAYMENTLINE operation="Add"><APINVOICEID>${escapeXml(r[mapping['APINVOICEID']])}</APINVOICEID><PAYMENTAMOUNT>${r[mapping['PAYMENTAMOUNT']]||0}</PAYMENTAMOUNT></PAYMENTLINE>\n`; });
             return b + `    </VENDORPAYMENT>\n`;
         }
 
         function generateCRBlock(rows, head, idx) {
-            let b = `    <CUSTRECEIPT operation="Add" REQUESTID="${idx+1}">\n      <SEQUENCENO>${escapeXml(head[mapping['SEQUENCENO']])}</SEQUENCENO><PAYMENTDATE>${formatDate(head[mapping['PAYMENTDATE']])}</PAYMENTDATE><BILLTOID>${escapeXml(head[mapping['BILLTOID']])}</BILLTOID><BANKACCOUNT>${escapeXml(head[mapping['BANKACCOUNT']])}</BANKACCOUNT>\n`;
+            let b = `    <CUSTRECEIPT operation="Add" REQUESTID="${idx+1}">\n      <SEQUENCENO>${escapeXml(head[mapping['SEQUENCENO']])}</SEQUENCENO><PAYMENTDATE>${formatDate(head[mapping['PAYMENTDATE']])}</PAYMENTDATE><BILLTOID>${escapeXml(head[mapping['BILLTOID']])}</BILLTOID><BANKACCOUNT>${escapeXml(head[mapping['BANKACCOUNT']])}</BANKACCOUNT><CURRENCYNAME>${escapeXml(head[mapping['CURRENCYNAME']]||'IDR')}</CURRENCYNAME>\n`;
             rows.forEach((r, i) => { b += `      <PAYMENTLINE operation="Add"><ARINVOICEID>${escapeXml(r[mapping['ARINVOICEID']])}</ARINVOICEID><PAYMENTAMOUNT>${r[mapping['PAYMENTAMOUNT']]||0}</PAYMENTAMOUNT></PAYMENTLINE>\n`; });
             return b + `    </CUSTRECEIPT>\n`;
         }
@@ -782,15 +853,91 @@
         }
 
         function generateOPBlock(rows, head, idx) {
-            let b = `    <OTHERPAYMENT operation="Add" REQUESTID="${idx+1}">\n      <PAYMENTNO>${escapeXml(head[mapping['PAYMENTNO']])}</PAYMENTNO><PAYMENTDATE>${formatDate(head[mapping['PAYMENTDATE']])}</PAYMENTDATE><BANKACCOUNT>${escapeXml(head[mapping['BANKACCOUNT']])}</BANKACCOUNT><PAYEE>${escapeXml(head[mapping['PAYEE']]||'')}</PAYEE><PAYMENTAMOUNT>${calculateSum(rows, mapping['LINE_AMOUNT'])}</PAYMENTAMOUNT>\n`;
-            rows.forEach((r, i) => { b += `      <PAYMENTLINE operation="Add"><KeyID>${i}</KeyID><GLACCOUNT>${escapeXml(r[mapping['LINE_ACCOUNT']])}</GLACCOUNT><AMOUNT>${r[mapping['LINE_AMOUNT']]||0}</AMOUNT><MEMO>${escapeXml(r[mapping['LINE_MEMO']]||'')}</MEMO></PAYMENTLINE>\n`; });
-            return b + `    </OTHERPAYMENT>\n`;
+            let b = `    <OTHERPAYMENT operation="Add" REQUESTID="${idx+1}">\n`;
+            b += `      <PAYMENTNO>${escapeXml(head[mapping['PAYMENTNO']])}</PAYMENTNO>\n`;
+            b += `      <PAYMENTDATE>${formatDate(head[mapping['PAYMENTDATE']])}</PAYMENTDATE>\n`;
+            b += `      <BANKACCOUNT>${escapeXml(head[mapping['BANKACCOUNT']])}</BANKACCOUNT>\n`;
+            if (mapping['PAYEE'] && head[mapping['PAYEE']]) {
+                b += `      <PAYEE>${escapeXml(head[mapping['PAYEE']])}</PAYEE>\n`;
+            }
+            if (mapping['MEMO'] && head[mapping['MEMO']]) {
+                b += `      <MEMO>${escapeXml(head[mapping['MEMO']])}</MEMO>\n`;
+            } else {
+                b += `      <MEMO/>\n`;
+            }
+            b += `      <PAYMENTAMOUNT>${calculateSum(rows, mapping['LINE_AMOUNT'])}</PAYMENTAMOUNT>\n`;
+            
+            rows.forEach((r, i) => {
+                b += `      <PAYMENTLINE operation="Add">\n`;
+                b += `        <KeyID>${i}</KeyID>\n`;
+                b += `        <GLACCOUNT>${escapeXml(r[mapping['LINE_ACCOUNT']])}</GLACCOUNT>\n`;
+                b += `        <AMOUNT>${r[mapping['LINE_AMOUNT']] || 0}</AMOUNT>\n`;
+                if (mapping['DEPTID'] && r[mapping['DEPTID']]) {
+                    b += `        <DEPTID>${escapeXml(r[mapping['DEPTID']])}</DEPTID>\n`;
+                }
+                if (mapping['PROJECTID'] && r[mapping['PROJECTID']]) {
+                    b += `        <PROJECTID>${escapeXml(r[mapping['PROJECTID']])}</PROJECTID>\n`;
+                }
+                b += `        <MEMO>${escapeXml(r[mapping['LINE_MEMO']] || '')}</MEMO>\n`;
+                b += `      </PAYMENTLINE>\n`;
+            });
+            b += `    </OTHERPAYMENT>\n`;
+            return b;
         }
 
         function generateODBlock(rows, head, idx) {
-            let b = `    <OTHERDEPOSIT operation="Add" REQUESTID="${idx+1}">\n      <DEPOSITNO>${escapeXml(head[mapping['DEPOSITNO']])}</DEPOSITNO><DEPOSITDATE>${formatDate(head[mapping['DEPOSITDATE']])}</DEPOSITDATE><BANKACCOUNT>${escapeXml(head[mapping['BANKACCOUNT']])}</BANKACCOUNT><DEPOSITAMOUNT>${calculateSum(rows, mapping['LINE_AMOUNT'])}</DEPOSITAMOUNT>\n`;
-            rows.forEach((r, i) => { b += `      <DEPOSITLINE operation="Add"><KeyID>${i}</KeyID><GLACCOUNT>${escapeXml(r[mapping['LINE_ACCOUNT']])}</GLACCOUNT><AMOUNT>${r[mapping['LINE_AMOUNT']]||0}</AMOUNT><MEMO>${escapeXml(r[mapping['LINE_MEMO']]||'')}</MEMO></DEPOSITLINE>\n`; });
-            return b + `    </OTHERDEPOSIT>\n`;
+            const txId = head[mapping['TRANSACTIONID']] || (idx + 880);
+            let b = `    <OTHERDEPOSIT operation="Add" REQUESTID="${idx + 1}">\n`;
+            b += `      <TRANSACTIONID>${txId}</TRANSACTIONID>\n`;
+            
+            rows.forEach((r, i) => {
+                const keyId = r['KeyID'] || (i + 1);
+                const glAmount = r[mapping['LINE_AMOUNT']] || 0;
+                const primeAmount = r[mapping['PRIMEAMOUNT']] !== undefined ? r[mapping['PRIMEAMOUNT']] : 0;
+                const rate = r[mapping['RATE']] || 1;
+                const desc = r[mapping['LINE_MEMO']] || '';
+                const txDate = r[mapping['TXDATE']] || '';
+                const posted = r[mapping['POSTED']] || '';
+                const currencyName = r[mapping['CURRENCYNAME']] || '';
+
+                b += `      <ACCOUNTLINE operation="Add">\n`;
+                b += `        <KeyID>${keyId}</KeyID>\n`;
+                b += `        <GLACCOUNT>${escapeXml(r[mapping['LINE_ACCOUNT']])}</GLACCOUNT>\n`;
+                b += `        <GLAMOUNT>${glAmount}</GLAMOUNT>\n`;
+                b += `        <DESCRIPTION>${escapeXml(desc)}</DESCRIPTION>\n`;
+                b += `        <RATE>${rate}</RATE>\n`;
+                b += `        <PRIMEAMOUNT>${primeAmount}</PRIMEAMOUNT>\n`;
+                b += `        <TXDATE>${escapeXml(txDate)}</TXDATE>\n`;
+                b += `        <POSTED>${escapeXml(posted)}</POSTED>\n`;
+                b += `        <CURRENCYNAME>${escapeXml(currencyName)}</CURRENCYNAME>\n`;
+                if (mapping['DEPTID'] && r[mapping['DEPTID']]) {
+                    b += `        <DEPTID>${escapeXml(r[mapping['DEPTID']])}</DEPTID>\n`;
+                }
+                if (mapping['PROJECTID'] && r[mapping['PROJECTID']]) {
+                    b += `        <PROJECTID>${escapeXml(r[mapping['PROJECTID']])}</PROJECTID>\n`;
+                }
+                b += `      </ACCOUNTLINE>\n`;
+            });
+
+            const jvNumber = head[mapping['JVNUMBER']] || '';
+            const transDate = formatDate(head[mapping['TRANSDATE']], 'YYYY-MM-DD');
+            const source = head['SOURCE'] || 'GL';
+            const transType = head['TRANSTYPE'] || 'other deposit';
+            const memo = head[mapping['MEMO']] || '';
+            const jvAmount = head[mapping['JVAMOUNT']] !== undefined ? head[mapping['JVAMOUNT']] : calculateSum(rows, mapping['LINE_AMOUNT']);
+            const bankAccount = head[mapping['GLACCOUNT3']] || '';
+            const rateHeader = head[mapping['RATE4']] || 1;
+
+            b += `      <JVNUMBER>${escapeXml(jvNumber)}</JVNUMBER>\n`;
+            b += `      <TRANSDATE>${transDate}</TRANSDATE>\n`;
+            b += `      <SOURCE>${escapeXml(source)}</SOURCE>\n`;
+            b += `      <TRANSTYPE>${escapeXml(transType)}</TRANSTYPE>\n`;
+            b += `      <TRANSDESCRIPTION>${escapeXml(memo)}</TRANSDESCRIPTION>\n`;
+            b += `      <JVAMOUNT>${jvAmount}</JVAMOUNT>\n`;
+            b += `      <GLACCOUNT>${escapeXml(bankAccount)}</GLACCOUNT>\n`;
+            b += `      <RATE>${rateHeader}</RATE>\n`;
+            b += `    </OTHERDEPOSIT>\n`;
+            return b;
         }
 
         // --- Helpers ---
